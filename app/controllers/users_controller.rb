@@ -1,17 +1,40 @@
 require "sinatra/base"
 require "json"
+require_relative "../../lib/memory_store"
 
 class UsersController < Sinatra::Base
+    configure do
+        set :store, MemoryStore.new
+    end
+    
     before do
         content_type :json
     end
 
     helpers do
-        def store
-            ::STORE
-        end
+        def store = settings.store
     end
 
+    post "/users" do
+        halt 400, "File not provided" unless params[:file]
+        tempfile = params[:file][:tempfile]
+        content = tempfile.read
+
+        data = JSON.parse(content, symbolize_names: true)
+
+        data.each do |user|
+            store.add(user)
+        end
+
+        status 201
+
+        {
+            message: "Arquivo recebido com sucesso",
+            user_count: data.count
+        }.to_json
+    end
+
+    # Superusers endpoint
     get "/superusers" do
         start_time = Time.now
         superusers = get_superusers
