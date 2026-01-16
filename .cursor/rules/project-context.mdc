@@ -1,0 +1,148 @@
+---
+name: project-context
+description: CodeCon JSON API - Ruby on Rails learning project focused on creating a performant API with 100,000 users
+---
+
+# CodeCon JSON API - Ruby on Rails Learning Project
+
+## Project Context
+
+This is a Ruby on Rails learning project focused on creating a performant API that receives a JSON file with 100,000 users and provides well-structured, high-performance endpoints for data analysis.
+
+### Resources
+
+- [Expected API Response Examples](https://github.com/codecon-dev/desafio-1-1s-vs-3j/blob/main/exemplos-endpoints.json)
+- [100,000 users JSON file for import](https://drive.google.com/file/d/1zOweCB2jidgHwirp_8oBnFyDgJKkWdDA/view?usp=sharing)
+- [1,000 users JSON file for testing](https://drive.google.com/file/d/1BX03cWxkvB_MbZN8_vtTJBDGiCufyO92/view?usp=sharing)
+
+## JSON Input Structure
+
+The JSON contains a list of users with the following structure:
+
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "age": "int",
+  "score": "int",
+  "active": "bool",
+  "country": "string",
+  "team": {
+    "name": "string",
+    "leader": "bool",
+    "projects": [{ "name": "string", "completed": "bool" }]
+  },
+  "logs": [{ "date": "YYYY-MM-DD", "action": "login/logout" }]
+}
+```
+
+## Required Endpoints
+
+### `POST /users`
+
+- Receives and stores users in memory
+- Can simulate an in-memory database
+- Accepts JSON array of users
+
+### `GET /superusers`
+
+- **Filter**: `score >= 900` AND `active = true`
+- Returns filtered data and request processing time (in milliseconds)
+- Must include timestamp of the request
+
+### `GET /top-countries`
+
+- Groups superusers by country
+- Returns the top 5 countries with the highest number of superusers
+- Must include processing time and timestamp
+
+### `GET /team-insights`
+
+- Groups by `team.name`
+- Returns for each team:
+  - Total members
+  - Number of leaders
+  - Number of completed projects
+  - Percentage of active members
+- Must include processing time and timestamp
+
+### `GET /active-users-per-day`
+
+- Counts how many logins occurred per date
+- Optional query parameter: `?min=3000` to filter days with at least 3,000 logins
+- Must include processing time and timestamp
+
+### `GET /evaluation`
+
+- Executes a self-evaluation of the main API endpoints
+- Returns a scoring report
+- Tests:
+  - If the returned status is 200
+  - Response time in milliseconds
+  - If the return is valid JSON
+- Can run embedded test scripts within the project
+- Returns JSON with results
+- Used for automated and fast delivery validation
+
+## Technical Requirements
+
+### Performance
+
+- **Response time < 1 second per endpoint** (critical requirement)
+- All endpoints must return:
+  - Processing time in milliseconds
+  - Timestamp of the request
+
+### Code Quality
+
+- Clean, modular code
+- Well-defined functions
+- Follow Ruby on Rails conventions
+- Use appropriate Rails patterns (controllers, services, models, etc.)
+
+### Response Format
+
+All endpoints should return JSON in a consistent format that includes:
+
+- The requested data
+- `processing_time_ms`: Processing time in milliseconds
+- `timestamp`: Request timestamp (ISO 8601 format recommended)
+
+## Development Guidelines
+
+### Ruby on Rails Best Practices
+
+- Use Rails conventions for controllers, models, and services
+- Keep controllers thin - delegate business logic to service objects
+- Use ActiveRecord or in-memory data structures efficiently
+- Consider caching strategies for performance
+- Use proper error handling and status codes
+
+### Performance Optimization
+
+- Optimize queries and data processing
+- Consider using indexes or efficient data structures
+- Minimize N+1 queries
+- Use appropriate data structures for fast lookups
+- Consider memoization where appropriate
+
+### Testing
+
+- The `/evaluation` endpoint should test all main endpoints
+- Ensure all endpoints return valid JSON
+- Verify response times meet the < 1s requirement
+- Test with both small (1k) and large (100k) datasets
+
+### Code Organization
+
+- Use service objects for complex business logic
+- Keep controllers focused on HTTP concerns
+- Use serializers or Jbuilder for JSON responses
+- Organize code in a modular, maintainable way
+
+## Notes
+
+- This is a learning project, so prioritize understanding Rails patterns and performance optimization
+- The project can use in-memory storage (simulating a database)
+- Focus on clean, readable code that demonstrates Rails best practices
+- Performance is critical - all endpoints must respond in < 1 second
